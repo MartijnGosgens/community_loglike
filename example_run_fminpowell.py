@@ -70,5 +70,4 @@ for method in methods:
     # calculate and print the scores of resulting partition
     part_scores = community_ext.compare_partitions(groundtruth_partition,partition)
     print('best par',best_par)
-    print("rand\t% 0f\tjaccard\t% 0f\tnmi\t% 0f\tnmi_arithm\t% 0f\tsize\t%d\tloglike\t% 0f" %\
-            (part_scores['rand'], part_scores['jaccard'], part_scores['nmi'], part_scores['nmi_arithm'], len(set(partition.values())), loglike))
+    community_ext.print_scores(part_scores, partition, loglike)

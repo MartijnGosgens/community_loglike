@@ -18,6 +18,7 @@ from .community_ext import (
     estimate_mu,
     ilfr_mu_loglikelihood,
     compare_partitions,
+    print_validation,
     model_log_likelihood
 )
 

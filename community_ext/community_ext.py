@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import array
 import random
+import math
 from math import exp, log, sqrt
 from collections import defaultdict
 from collections import Counter
@@ -998,10 +999,12 @@ def _nmi(x, y):
     return sum_mi/sqrt(_eta(x)*_eta(y)),2.*sum_mi/(_eta(x)+_eta(y))
 
 def compare_partitions(p1,p2,safe=True):
-    """Compute three metrics of two partitions similarity:
+    """Compute four metrics of two partitions similarity:
       * Rand index
       * Jaccard index
+      * Inverse Jaccard index
       * NMI 
+      * Pearson correlation coefficient 
 
     Parameters
     ----------
@@ -1013,7 +1016,7 @@ def compare_partitions(p1,p2,safe=True):
     Returns
     -------
     r : dict
-       with keys 'rand', 'jaccard', 'nmi'
+       with keys 'rand', 'jaccard', 'inv_jaccard', 'nmi', 'pearson'
 
     Examples
     --------
@@ -1056,8 +1059,19 @@ def compare_partitions(p1,p2,safe=True):
     else:
         res['rand'] = float(a00 + a11) / (a00 + a01 + a10 + a11)
     if (a01 + a10 + a00) == 0:
+        res['inv_jaccard'] = 1.
+    else:
+        res['inv_jaccard'] = float(a00) / (a01 + a10 + a00)
+    if (a01 + a10 + a11) == 0:
         res['jaccard'] = 1.
     else:
-        res['jaccard'] = float(a00) / (a01 + a10 + a00)
+        res['jaccard'] = float(a11) / (a01 + a10 + a11)
+    if (a11+a10)*(a11+a01)*(a00+a10)*(a00+a01)==0:
+        res['pearson'] = 1.
+    else:
+        res['pearson'] = float(a11*a00 - a10*a01) / math.sqrt((a11+a10)*(a11+a01)*(a00+a10)*(a00+a01))
     return res 
 
+def print_validation(part_scores, partition, loglike):
+    print("rand\t% 0f\tjaccard\t% 0f\tinv_jaccard\t% 0f\tpearson\t% 0f\tnmi\t% 0f\tnmi_arithm\t% 0f\tsize\t%d\tloglike\t% 0f" %\
+            (part_scores['rand'], part_scores['jaccard'], part_scores['inv_jaccard'], part_scores['pearson'], part_scores['nmi'], part_scores['nmi_arithm'], len(set(partition.values())), loglike))
