@@ -4,8 +4,13 @@
 from __future__ import print_function
 import community_ext
 import networkx as nx
+import sys
 
-fn1 = "datasets/polblogs/polblogs.edges"
+
+dataset = 'polblogs'
+if len(sys.argv)>1:
+    dataset = sys.argv[1]
+fn1 = "datasets/{}/{}.edges".format(dataset,dataset)
 fn2 = fn1.replace(".edges",".clusters")
 print("DATASET:",fn1)
 
